@@ -1,11 +1,12 @@
 <?php
-	$host = "localhost";
-	$user = "postgres";
-	$pass = "Georgi123";
-	$db = "mydata";
-
-	$con = pg_connect("host=$host dbname=$db user=$user password=$pass") or die ("Could not connect to Server\n");
-	if(!$con){
-		echo "Error : Unable to open database\n";
-	}
-?>
+// Configure DATABASE_URL in the PHP server environment; never commit credentials.
+$connectionString = getenv('DATABASE_URL');
+if (!$connectionString) {
+    http_response_code(503);
+    exit('Database configuration is unavailable.');
+}
+$con = @pg_connect($connectionString);
+if (!$con) {
+    http_response_code(503);
+    exit('Database connection is unavailable.');
+}
